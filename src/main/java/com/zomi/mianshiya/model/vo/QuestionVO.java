@@ -1,6 +1,7 @@
 package com.zomi.mianshiya.model.vo;
 
-import com.zomi.mianshiya.model.entity.QuestionBank;
+import cn.hutool.json.JSONUtil;
+import com.zomi.mianshiya.model.entity.Question;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
@@ -15,7 +16,7 @@ import java.util.List;
  * @from <a href="https://www.code-nav.cn">编程导航学习圈</a>
  */
 @Data
-public class QuestionBankVO implements Serializable {
+public class QuestionVO implements Serializable {
 
     /**
      * id
@@ -60,31 +61,33 @@ public class QuestionBankVO implements Serializable {
     /**
      * 封装类转对象
      *
-     * @param questionBankVO
+     * @param questionVO
      * @return
      */
-    public static QuestionBank voToObj(QuestionBankVO questionBankVO) {
-        if (questionBankVO == null) {
+    public static Question voToObj(QuestionVO questionVO) {
+        if (questionVO == null) {
             return null;
         }
-        QuestionBank questionBank = new QuestionBank();
-        BeanUtils.copyProperties(questionBankVO, questionBank);
-        List<String> tagList = questionBankVO.getTagList();
-        return questionBank;
+        Question question = new Question();
+        BeanUtils.copyProperties(questionVO, question);
+        List<String> tagList = questionVO.getTagList();
+        question.setTags(JSONUtil.toJsonStr(tagList));
+        return question;
     }
 
     /**
      * 对象转封装类
      *
-     * @param questionBank
+     * @param question
      * @return
      */
-    public static QuestionBankVO objToVo(QuestionBank questionBank) {
-        if (questionBank == null) {
+    public static QuestionVO objToVo(Question question) {
+        if (question == null) {
             return null;
         }
-        QuestionBankVO questionBankVO = new QuestionBankVO();
-        BeanUtils.copyProperties(questionBank, questionBankVO);
-        return questionBankVO;
+        QuestionVO questionVO = new QuestionVO();
+        BeanUtils.copyProperties(question, questionVO);
+        questionVO.setTagList(JSONUtil.toList(question.getTags(), String.class));
+        return questionVO;
     }
 }
