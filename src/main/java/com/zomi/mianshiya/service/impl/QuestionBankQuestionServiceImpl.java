@@ -10,6 +10,7 @@ import com.zomi.mianshiya.service.QuestionBankQuestionService;
 import com.zomi.mianshiya.mapper.QuestionBankQuestionMapper;
 import com.zomi.mianshiya.service.QuestionBankService;
 import com.zomi.mianshiya.service.QuestionService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,7 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
     private QuestionBankService questionBankService;
 
     @Override
-    public void validQuestionBankQuestion(QuestionBankQuestion questionBankQuestion, boolean add) {
+    public void validQuestionBankQuestion(@NotNull QuestionBankQuestion questionBankQuestion, boolean add) {
         ThrowUtils.throwIf(questionBankQuestion == null, ErrorCode.PARAMS_ERROR);
         // 题目和题库必须存在
         Long questionId = questionBankQuestion.getQuestionId();
