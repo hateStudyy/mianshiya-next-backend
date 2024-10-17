@@ -9,15 +9,18 @@ import com.zomi.mianshiya.common.ResultUtils;
 import com.zomi.mianshiya.constant.UserConstant;
 import com.zomi.mianshiya.exception.BusinessException;
 import com.zomi.mianshiya.exception.ThrowUtils;
-import com.zomi.mianshiya.model.dto.questionBank.QuestionBankAddRequest;
-import com.zomi.mianshiya.model.dto.questionBank.QuestionBankEditRequest;
-import com.zomi.mianshiya.model.dto.questionBank.QuestionBankQueryRequest;
-import com.zomi.mianshiya.model.dto.questionBank.QuestionBankUpdateRequest;
+import com.zomi.mianshiya.model.dto.question.QuestionQueryRequest;
+import com.zomi.mianshiya.model.dto.questionbank.QuestionBankAddRequest;
+import com.zomi.mianshiya.model.dto.questionbank.QuestionBankEditRequest;
+import com.zomi.mianshiya.model.dto.questionbank.QuestionBankQueryRequest;
+import com.zomi.mianshiya.model.dto.questionbank.QuestionBankUpdateRequest;
+import com.zomi.mianshiya.model.entity.Question;
 import com.zomi.mianshiya.model.entity.QuestionBank;
 import com.zomi.mianshiya.model.entity.User;
 import com.zomi.mianshiya.model.vo.QuestionBankVO;
 import com.zomi.mianshiya.service.QuestionBankService;
 import com.zomi.mianshiya.service.UserService;
+import com.zomi.mianshiya.service.impl.QuestionServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +45,9 @@ public class QuestionBankController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private QuestionServiceImpl questionService;
+
     // region 增删改查
 
     /**
@@ -52,6 +58,7 @@ public class QuestionBankController {
      * @return
      */
     @PostMapping("/add")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Long> addQuestionBank(@RequestBody QuestionBankAddRequest questionBankAddRequest, HttpServletRequest request) {
         ThrowUtils.throwIf(questionBankAddRequest == null, ErrorCode.PARAMS_ERROR);
         // todo 在此处将实体类和 DTO 进行转换
@@ -78,6 +85,7 @@ public class QuestionBankController {
      * @return
      */
     @PostMapping("/delete")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> deleteQuestionBank(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -127,15 +135,27 @@ public class QuestionBankController {
     /**
      * 根据 id 获取题库（封装类）
      *
-     * @param id
+     * @param questionBankQueryRequest
      * @return
      */
     @GetMapping("/get/vo")
-    public BaseResponse<QuestionBankVO> getQuestionBankVOById(long id, HttpServletRequest request) {
+    public BaseResponse<QuestionBankVO> getQuestionBankVOById(QuestionBankQueryRequest questionBankQueryRequest, HttpServletRequest request) {
+        ThrowUtils.throwIf(questionBankQueryRequest == null, ErrorCode.PARAMS_ERROR);
+        Long id = questionBankQueryRequest.getId();
         ThrowUtils.throwIf(id <= 0, ErrorCode.PARAMS_ERROR);
         // 查询数据库
         QuestionBank questionBank = questionBankService.getById(id);
         ThrowUtils.throwIf(questionBank == null, ErrorCode.NOT_FOUND_ERROR);
+        // 查询题库封装类
+        QuestionBankVO questionBankVO = questionBankService.getQuestionBankVO(questionBank, request);
+        // 是否要关联查询题库下的题目列表
+        boolean needQueryQuestionList = questionBankQueryRequest.isNeedQueryQuestionList();
+        if (needQueryQuestionList) {
+            QuestionQueryRequest questionQueryRequest = new QuestionQueryRequest();
+            questionQueryRequest.setQuestionBankId(id);
+            Page<Question> questionPage = questionService.listQuestionByPage(questionQueryRequest);
+            questionBankVO.setQuestionPage(questionPage);
+        }
         // 获取封装类
         return ResultUtils.success(questionBankService.getQuestionBankVO(questionBank, request));
     }

@@ -1,23 +1,36 @@
-package com.zomi.mianshiya.model.dto.questionBank;
+package com.zomi.mianshiya.model.dto.questionbankquestion;
 
+import com.zomi.mianshiya.common.PageRequest;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * 编辑题库请求
+ * 查询题库题目关系请求
  *
  * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
  * @from <a href="https://www.code-nav.cn">编程导航学习圈</a>
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class QuestionBankEditRequest implements Serializable {
+public class QuestionBankQuestionQueryRequest extends PageRequest implements Serializable {
 
     /**
      * id
      */
     private Long id;
+
+    /**
+     * id
+     */
+    private Long notId;
+
+    /**
+     * 搜索词
+     */
+    private String searchText;
 
     /**
      * 标题
@@ -33,6 +46,11 @@ public class QuestionBankEditRequest implements Serializable {
      * 标签列表
      */
     private List<String> tags;
+
+    /**
+     * 创建用户 id
+     */
+    private Long userId;
 
     private static final long serialVersionUID = 1L;
 }

@@ -1,4 +1,4 @@
-package com.zomi.mianshiya.model.dto.questionBank;
+package com.zomi.mianshiya.model.dto.questionbankquestion;
 
 import lombok.Data;
 
@@ -6,13 +6,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 创建题库请求
+ * 创建题库题目关系请求
  *
  * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
  * @from <a href="https://www.code-nav.cn">编程导航学习圈</a>
  */
 @Data
-public class QuestionBankAddRequest implements Serializable {
+public class QuestionBankQuestionAddRequest implements Serializable {
 
     /**
      * 标题

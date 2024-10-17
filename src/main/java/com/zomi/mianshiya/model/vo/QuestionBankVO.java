@@ -1,5 +1,7 @@
 package com.zomi.mianshiya.model.vo;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zomi.mianshiya.model.entity.Question;
 import com.zomi.mianshiya.model.entity.QuestionBank;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
@@ -31,6 +33,11 @@ public class QuestionBankVO implements Serializable {
      * 内容
      */
     private String content;
+
+    /**
+     * 题库里的题目列表（分页）
+     */
+    Page<Question> questionPage;
 
     /**
      * 创建用户 id

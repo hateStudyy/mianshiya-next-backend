@@ -9,5 +9,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2024-10-14 01:04:20
 */
 public interface QuestionBankQuestionService extends IService<QuestionBankQuestion> {
-
+    public void validQuestionBankQuestion(QuestionBankQuestion questionBankQuestion, boolean add);
 }

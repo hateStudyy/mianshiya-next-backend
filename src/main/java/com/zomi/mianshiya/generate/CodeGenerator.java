@@ -35,10 +35,10 @@ public class CodeGenerator {
 //        String upperDataKey = "UserComment";
         // 指定生成参数
         String packageName = "com.zomi.mianshiya";
-        String dataName = "题库";
-        String dataKey = "question";
+        String dataName = "题库题目关系";
+        String dataKey = "questionBankQuestion";
 // 注意，这里需要保持首字母大写
-        String upperDataKey = "Question";
+        String upperDataKey = "QuestionBankQuestion";
 
         // 封装生成参数
         Map<String, Object> dataModel = new HashMap<>();

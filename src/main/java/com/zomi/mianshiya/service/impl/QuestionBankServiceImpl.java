@@ -8,7 +8,7 @@ import com.zomi.mianshiya.common.ErrorCode;
 import com.zomi.mianshiya.constant.CommonConstant;
 import com.zomi.mianshiya.exception.ThrowUtils;
 import com.zomi.mianshiya.mapper.QuestionBankMapper;
-import com.zomi.mianshiya.model.dto.questionBank.QuestionBankQueryRequest;
+import com.zomi.mianshiya.model.dto.questionbank.QuestionBankQueryRequest;
 import com.zomi.mianshiya.model.entity.QuestionBank;
 
 import com.zomi.mianshiya.model.entity.User;

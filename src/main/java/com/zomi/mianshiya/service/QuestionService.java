@@ -17,12 +17,14 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface QuestionService extends IService<Question> {
 
-    /**
-     * 校验数据
-     *
-     * @param question
-     * @param add 对创建的数据进行校验
-     */
+    public Page<Question> listQuestionByPage(QuestionQueryRequest questionQueryRequest);
+
+        /**
+         * 校验数据
+         *
+         * @param question
+         * @param add 对创建的数据进行校验
+         */
     void validQuestion(Question question, boolean add);
 
     /**

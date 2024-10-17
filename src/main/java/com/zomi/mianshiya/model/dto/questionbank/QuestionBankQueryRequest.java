@@ -1,4 +1,4 @@
-package com.zomi.mianshiya.model.dto.questionBank;
+package com.zomi.mianshiya.model.dto.questionbank;
 
 import com.zomi.mianshiya.common.PageRequest;
 import lombok.Data;
@@ -21,6 +21,11 @@ public class QuestionBankQueryRequest extends PageRequest implements Serializabl
      * id
      */
     private Long id;
+
+    /**
+     * 是否要关联查询题目列表
+     */
+    private boolean needQueryQuestionList;
 
     /**
      * id

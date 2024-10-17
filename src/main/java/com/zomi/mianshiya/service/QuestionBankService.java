@@ -3,7 +3,7 @@ package com.zomi.mianshiya.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zomi.mianshiya.model.dto.questionBank.QuestionBankQueryRequest;
+import com.zomi.mianshiya.model.dto.questionbank.QuestionBankQueryRequest;
 import com.zomi.mianshiya.model.entity.QuestionBank;
 import com.zomi.mianshiya.model.vo.QuestionBankVO;
 
