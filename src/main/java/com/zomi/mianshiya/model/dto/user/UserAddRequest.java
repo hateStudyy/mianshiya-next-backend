@@ -1,6 +1,7 @@
 package com.zomi.mianshiya.model.dto.user;
 
 import java.io.Serializable;
+
 import lombok.Data;
 
 /**
@@ -21,6 +22,11 @@ public class UserAddRequest implements Serializable {
      * 账号
      */
     private String userAccount;
+
+    /**
+     * 用户简介
+     */
+    private String userProfile;
 
     /**
      * 用户头像
