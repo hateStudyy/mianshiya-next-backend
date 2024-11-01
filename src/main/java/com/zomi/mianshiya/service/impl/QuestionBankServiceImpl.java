@@ -81,13 +81,13 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankMapper, Que
         // todo 从对象中取值
         Long id = questionBankQueryRequest.getId();
         Long notId = questionBankQueryRequest.getNotId();
-        String title = questionBankQueryRequest.getTitle();
-        String content = questionBankQueryRequest.getContent();
         String searchText = questionBankQueryRequest.getSearchText();
+        String title = questionBankQueryRequest.getTitle();
+        String description = questionBankQueryRequest.getDescription();
+        Long userId = questionBankQueryRequest.getUserId();
+        boolean needQueryQuestionList = questionBankQueryRequest.isNeedQueryQuestionList();
         String sortField = questionBankQueryRequest.getSortField();
         String sortOrder = questionBankQueryRequest.getSortOrder();
-        List<String> tagList = questionBankQueryRequest.getTags();
-        Long userId = questionBankQueryRequest.getUserId();
         // todo 补充需要的查询条件
         // 从多字段中搜索
         if (StringUtils.isNotBlank(searchText)) {
@@ -96,15 +96,10 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankMapper, Que
         }
         // 模糊查询
         queryWrapper.like(StringUtils.isNotBlank(title), "title", title);
-        queryWrapper.like(StringUtils.isNotBlank(content), "content", content);
-        // JSON 数组查询
-        if (CollUtil.isNotEmpty(tagList)) {
-            for (String tag : tagList) {
-                queryWrapper.like("tags", "\"" + tag + "\"");
-            }
-        }
+        queryWrapper.like(StringUtils.isNotBlank(description), "description", description);
+
         // 精确查询
-        queryWrapper.ne(ObjectUtils.isNotEmpty(notId), "id", notId);
+        queryWrapper.ne(ObjectUtils.isNotEmpty(notId), "notId", notId);
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
         queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
         // 排序规则
