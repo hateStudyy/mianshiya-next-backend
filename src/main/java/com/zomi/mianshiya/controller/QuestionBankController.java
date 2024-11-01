@@ -18,6 +18,7 @@ import com.zomi.mianshiya.model.entity.Question;
 import com.zomi.mianshiya.model.entity.QuestionBank;
 import com.zomi.mianshiya.model.entity.User;
 import com.zomi.mianshiya.model.vo.QuestionBankVO;
+import com.zomi.mianshiya.model.vo.QuestionVO;
 import com.zomi.mianshiya.service.QuestionBankService;
 import com.zomi.mianshiya.service.UserService;
 import com.zomi.mianshiya.service.impl.QuestionServiceImpl;
@@ -154,7 +155,8 @@ public class QuestionBankController {
             QuestionQueryRequest questionQueryRequest = new QuestionQueryRequest();
             questionQueryRequest.setQuestionBankId(id);
             Page<Question> questionPage = questionService.listQuestionByPage(questionQueryRequest);
-            questionBankVO.setQuestionPage(questionPage);
+            Page<QuestionVO> questionVOPage = questionService.getQuestionVOPage(questionPage, request);
+            questionBankVO.setQuestionPage(questionVOPage);
         }
         // 获取封装类
         return ResultUtils.success(questionBankService.getQuestionBankVO(questionBank, request));
@@ -190,7 +192,7 @@ public class QuestionBankController {
         long current = questionBankQueryRequest.getCurrent();
         long size = questionBankQueryRequest.getPageSize();
         // 限制爬虫
-        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
+        ThrowUtils.throwIf(size > 200, ErrorCode.PARAMS_ERROR);
         // 查询数据库
         Page<QuestionBank> questionBankPage = questionBankService.page(new Page<>(current, size),
                 questionBankService.getQueryWrapper(questionBankQueryRequest));
