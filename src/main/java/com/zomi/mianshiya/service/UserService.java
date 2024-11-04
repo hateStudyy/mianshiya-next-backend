@@ -136,7 +136,7 @@ public interface UserService extends IService<User> {
      * @param year   年份（为空表示当前年份）
      * @return 签到记录映射
      */
-    Map<LocalDate, Boolean> getUserSignInRecord(long userId, Integer year);
+    List<Integer> getUserSignInRecord(long userId, Integer year);
 
 
 }

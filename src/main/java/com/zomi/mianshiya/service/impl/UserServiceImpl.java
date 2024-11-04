@@ -20,10 +20,7 @@ import com.zomi.mianshiya.utils.SqlUtils;
 
 import java.time.LocalDate;
 import java.time.Year;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -296,6 +293,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         RBitSet signInBitSet = redissonClient.getBitSet(key);
         // 获取当前日期是一年中的第几天，作为偏移量（从 1 开始计数）
         int offset = date.getDayOfYear();
+//        signInBitSet.set(5);
+//        signInBitSet.set(100);
+//        signInBitSet.set(233);
+//        signInBitSet.set(114);
         // 检查当天是否已经签到
         if (!signInBitSet.get(offset)) {
             // 如果当天还未签到，则设置
@@ -306,28 +307,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public Map<LocalDate, Boolean> getUserSignInRecord(long userId, Integer year) {
+    public List<Integer> getUserSignInRecord(long userId, Integer year) {
         if (year == null) {
             LocalDate date = LocalDate.now();
             year = date.getYear();
         }
         String key = RedisConstant.getUserSignInRedisKey(year, userId);
         RBitSet signInBitSet = redissonClient.getBitSet(key);
-        // LinkedHashMap 保证有序
-        Map<LocalDate, Boolean> result = new LinkedHashMap<>();
-        // 获取当前年份的总天数
-        int totalDays = Year.of(year).length();
-        // 依次获取每一天的签到状态
-        for (int dayOfYear = 1; dayOfYear <= totalDays; dayOfYear++) {
-            // 获取 key：当前日期
-            LocalDate currentDate = LocalDate.ofYearDay(year, dayOfYear);
-            // 获取 value：当天是否有刷题
-            boolean hasRecord = signInBitSet.get(dayOfYear);
-            // 将结果放入 map
-            result.put(currentDate, hasRecord);
+        // 加载 BitSet 到内存中，避免后续读取时发送多次请求
+        BitSet bitSet = signInBitSet.asBitSet();
+        // 统计签到的日期
+        List<Integer> dayList = new ArrayList<>();
+        // 从索引 0 开始查找下一个被设置为 1 的位
+        int index = bitSet.nextSetBit(0);
+        while (index >= 0) {
+            dayList.add(index);
+            // 查找下一个被设置为 1 的位
+            index = bitSet.nextSetBit(index + 1);
         }
-        return result;
+        return dayList;
     }
-
 
 }
