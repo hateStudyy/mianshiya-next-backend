@@ -1,13 +1,21 @@
 package com.zomi.mianshiya.service;
 
+import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zomi.mianshiya.common.ErrorCode;
+import com.zomi.mianshiya.exception.BusinessException;
 import com.zomi.mianshiya.model.dto.question.QuestionQueryRequest;
 import com.zomi.mianshiya.model.entity.Question;
+import com.zomi.mianshiya.model.entity.QuestionBankQuestion;
 import com.zomi.mianshiya.model.vo.QuestionVO;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 题库服务
@@ -61,4 +69,10 @@ public interface QuestionService extends IService<Question> {
      */
     Page<Question> searchFromEs(QuestionQueryRequest questionQueryRequest);
 
+
+    /**
+     * 批量删除题目
+     * @param questionIdList
+     */
+    public void batchDeleteQuestions(List<Long> questionIdList);
 }

@@ -9,16 +9,19 @@ import com.zomi.mianshiya.common.ResultUtils;
 import com.zomi.mianshiya.constant.UserConstant;
 import com.zomi.mianshiya.exception.BusinessException;
 import com.zomi.mianshiya.exception.ThrowUtils;
+import com.zomi.mianshiya.model.dto.question.QuestionBatchDeleteRequest;
+import com.zomi.mianshiya.model.dto.questionbankquestion.QuestionBankQuestionBatchAddRequest;
 import com.zomi.mianshiya.model.dto.question.QuestionQueryRequest;
 import com.zomi.mianshiya.model.dto.questionbank.QuestionBankAddRequest;
 import com.zomi.mianshiya.model.dto.questionbank.QuestionBankEditRequest;
 import com.zomi.mianshiya.model.dto.questionbank.QuestionBankQueryRequest;
 import com.zomi.mianshiya.model.dto.questionbank.QuestionBankUpdateRequest;
+import com.zomi.mianshiya.model.dto.questionbankquestion.QuestionBankQuestionBatchRemoveRequest;
 import com.zomi.mianshiya.model.entity.Question;
 import com.zomi.mianshiya.model.entity.QuestionBank;
 import com.zomi.mianshiya.model.entity.User;
 import com.zomi.mianshiya.model.vo.QuestionBankVO;
-import com.zomi.mianshiya.model.vo.QuestionVO;
+import com.zomi.mianshiya.service.QuestionBankQuestionService;
 import com.zomi.mianshiya.service.QuestionBankService;
 import com.zomi.mianshiya.service.UserService;
 import com.zomi.mianshiya.service.impl.QuestionServiceImpl;
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 题库接口
@@ -48,6 +52,9 @@ public class QuestionBankController {
 
     @Resource
     private QuestionServiceImpl questionService;
+
+    @Resource
+    private QuestionBankQuestionService questionBankQuestionService;
 
     // region 增删改查
 
@@ -261,4 +268,42 @@ public class QuestionBankController {
     }
 
     // endregion
+    @PostMapping("/add/batch")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> batchAddQuestionsToBank(
+            @RequestBody QuestionBankQuestionBatchAddRequest questionBankQuestionBatchAddRequest,
+            HttpServletRequest request
+    ) {
+        // 参数校验
+        ThrowUtils.throwIf(questionBankQuestionBatchAddRequest == null, ErrorCode.PARAMS_ERROR);
+        User loginUser = userService.getLoginUser(request);
+        Long questionBankId = questionBankQuestionBatchAddRequest.getQuestionBankId();
+        List<Long> questionIdList = questionBankQuestionBatchAddRequest.getQuestionIdList();
+        questionBankQuestionService.batchAddQuestionsToBank(questionIdList, questionBankId, loginUser);
+        return ResultUtils.success(true);
+    }
+
+    @PostMapping("/remove/batch")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> batchRemoveQuestionsFromBank(
+            @RequestBody QuestionBankQuestionBatchRemoveRequest questionBankQuestionBatchRemoveRequest,
+            HttpServletRequest request
+    ) {
+        // 参数校验
+        ThrowUtils.throwIf(questionBankQuestionBatchRemoveRequest == null, ErrorCode.PARAMS_ERROR);
+        Long questionBankId = questionBankQuestionBatchRemoveRequest.getQuestionBankId();
+        List<Long> questionIdList = questionBankQuestionBatchRemoveRequest.getQuestionIdList();
+        questionBankQuestionService.batchRemoveQuestionsFromBank(questionIdList, questionBankId);
+        return ResultUtils.success(true);
+    }
+
+    @PostMapping("/delete/batch")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> batchDeleteQuestions(@RequestBody QuestionBatchDeleteRequest questionBatchDeleteRequest,
+                                                      HttpServletRequest request) {
+        ThrowUtils.throwIf(questionBatchDeleteRequest == null, ErrorCode.PARAMS_ERROR);
+        questionService.batchDeleteQuestions(questionBatchDeleteRequest.getQuestionIdList());
+        return ResultUtils.success(true);
+    }
+
 }
